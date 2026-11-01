@@ -102,8 +102,8 @@
     "extras.title": "Extras", "extras.sub": "Add them to any session, right in the booking.",
     "info.title": "Good to know",
     "info.s1": "Pick your session, your extras and a slot among my available times.",
-    "info.s2": "Your slot is blocked in my calendar. Nobody else can take it.",
-    "info.s3": "You pay a 50% deposit by bank transfer within 24 hours. Without it, the booking is cancelled.",
+    "info.s2": "Your slot is blocked in my calendar while I wait for your deposit.",
+    "info.s3": "You pay a 50% deposit by bank transfer within 24 hours (a QR code makes it quick). Once it arrives, I confirm your session. Without it, the request is cancelled.",
     "info.s4": "On the day, please arrive 15 minutes early.",
     "book.title": "Book", "book.sub": "The total updates as you fill in the form.",
     "f.s1": "Your session", "f.s2": "Details", "f.s3": "Extras", "f.optional": "optional", "f.s4": "Your contact", "f.s5": "Your slot",
@@ -118,16 +118,19 @@
     "f.slotIntro": "Only my free days and times are shown. The slot you pick is blocked for you.",
     "f.openCal": "See my availability",
     "f.copied": "Message copied. Paste it into the Instagram chat.",
-    "f.done": "Your slot is booked and you'll get a confirmation email. Pay the 50% deposit by bank transfer within 24 hours, otherwise the booking will be cancelled.",
-    "f.depositNote": "Important: the 50% deposit must be paid by bank transfer within 24 hours of booking. Without it, your booking will be cancelled.",
+    "f.done": "Your request is saved and your slot is blocked. Pay the deposit now: I confirm your session as soon as it arrives. Without a transfer within 24 hours, the request is cancelled.",
+    "f.depositNote": "Important: your booking is only confirmed once the 50% deposit arrives, paid by bank transfer within 24 hours. Without it, it is cancelled.",
     "sum.deposit": "50% deposit within 24 h",
     "f.iban": "Account for the transfer",
+    "pay.amount": "Amount", "pay.payee": "Payee", "pay.ref": "Reference", "pay.copy": "Copy",
+    "pay.help": "Scan the QR code with your banking app: the transfer is pre-filled. On your phone, copy the details.",
+    "pay.range": "For a large group, this is the minimum deposit. I'll confirm the exact amount based on the number of people.",
     "err.shoot": "Pick a session.", "err.people": "Tell me how many people.", "err.occasion": "Tell me the occasion.",
     "err.ceremony": "Pick at least one ceremony.", "err.date": "Pick a date.",
     "err.location": "Tell me the place, the travel fee depends on it.", "err.name": "Tell me your name.",
     "err.email": "Enter a valid email, the confirmation is sent there.",
     "sum.title": "Your booking", "sum.total": "Estimated total",
-    "sum.fine": "The deposit is paid by bank transfer within 24 hours of booking, otherwise the booking is cancelled. The rest is paid on the day of the shoot.",
+    "sum.fine": "The deposit is paid by bank transfer within 24 hours. Your session is confirmed once it arrives, otherwise the request is cancelled. The rest is paid on the day of the shoot.",
     "mb.go": "My slot",
     "foot.thanks": "Thank you for your trust",
     "foot.verse": "Colossians 3:23 · “Whatever you do, work at it with all your heart, as working for the Lord, not for human masters.”"
@@ -281,7 +284,7 @@
     // acompte : la moitié du total (pour une fourchette, la moitié de chaque borne)
     const half = n => Math.round(n / 2);
     const deposit = s.quote ? null : (from ? t("from") + " " + eur(half(min)) : range(half(min), half(max)));
-    return { lines, total, notes, deposit };
+    return { lines, total, notes, deposit, depositAmount: s.quote ? 0 : half(min), depositRange: !s.quote && min !== max };
   }
 
   /* ---------- Mise à jour ---------- */
@@ -400,6 +403,41 @@
     }
   });
 
+  /* ---------- Paiement de l'acompte ---------- */
+  const ascii = str => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\x20-\x7E]/g, "");
+  const payData = {};
+
+  function showPayment(dateText) {
+    const c = compute();
+    if (!c || !c.depositAmount || !CFG.iban) return;
+    const amount = c.depositAmount.toFixed(2);
+    const ref = ascii(`Acompte ${L(shoot())[0]} ${$("#name").value.trim()}${dateText ? " " + dateText : ""}`).slice(0, 140);
+    Object.assign(payData, { payAmountRaw: amount, payIbanRaw: CFG.iban.replace(/\s/g, ""), payRef: ref });
+    $("#payAmount").textContent = eur(c.depositAmount);
+    $("#payPayee").textContent = CFG.payee || "";
+    $("#payIban").textContent = CFG.iban;
+    $("#payRef").textContent = ref;
+    $("#payRange").hidden = !c.depositRange;
+    if (window.qrcode) {
+      const epc = ["BCD", "002", "1", "SCT", "", ascii(CFG.payee || ""), payData.payIbanRaw, "EUR" + amount, "", "", ref].join("\n");
+      const qr = qrcode(0, "M");
+      qr.addData(epc);
+      qr.make();
+      $("#payQr").innerHTML = qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+    }
+    $("#pay").hidden = false;
+  }
+
+  $("#pay").addEventListener("click", async e => {
+    const b = e.target.closest("[data-copy]");
+    if (!b) return;
+    try {
+      await navigator.clipboard.writeText(payData[b.dataset.copy] || $("#" + b.dataset.copy).textContent);
+      b.classList.add("ok");
+      setTimeout(() => b.classList.remove("ok"), 1500);
+    } catch (err) {}
+  });
+
   /* ---------- Agenda Cal.com ---------- */
   // ?cal=utilisateur/evenement permet de tester l'agenda avant que Ruth ait son compte
   const testCal = new URLSearchParams(location.search).get("cal");
@@ -444,7 +482,14 @@
     });
     Cal.ns[ns]("on", {
       action: "bookingSuccessful",
-      callback: () => { $("#done").hidden = false; }
+      callback: e => {
+        const d = e && e.detail && e.detail.data;
+        const start = d && (d.startTime || (d.booking && d.booking.startTime) || d.date);
+        const when = start && !isNaN(new Date(start)) ? new Date(start).toLocaleDateString("fr-BE", { day: "2-digit", month: "2-digit" }) : "";
+        $("#done").hidden = false;
+        showPayment(when);
+        $("#done").scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     });
     $("#slotStep").scrollIntoView({ behavior: "smooth", block: "start" });
   }

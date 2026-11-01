@@ -61,8 +61,8 @@
     </div>
     <ol class="steps">
       <li><b>01</b><span data-i18n="info.s1">Tu choisis ta séance, tes suppléments et ton créneau parmi mes disponibilités.</span></li>
-      <li><b>02</b><span data-i18n="info.s2">Ton créneau est bloqué dans mon agenda. Personne d'autre ne peut le prendre.</span></li>
-      <li><b>03</b><span data-i18n="info.s3">Tu verses un acompte de 50 % par virement dans les 24 h. Sans virement, le rendez-vous est annulé.</span></li>
+      <li><b>02</b><span data-i18n="info.s2">Ton créneau est bloqué dans mon agenda, en attente de ton acompte.</span></li>
+      <li><b>03</b><span data-i18n="info.s3">Tu verses 50 % d'acompte par virement dans les 24 h (un QR code te facilite le paiement). Dès réception, je confirme ta séance. Sans virement, la demande est annulée.</span></li>
       <li><b>04</b><span data-i18n="info.s4">Le jour J, viens 15 minutes en avance.</span></li>
     </ol>
   </section>
@@ -173,7 +173,7 @@
         <fieldset class="step" id="slotStep">
           <legend><b>5</b><span id="s5label" data-i18n="f.s5">Ton créneau</span></legend>
           <p class="note" id="slotIntro" data-i18n="f.slotIntro">Seuls mes jours et heures encore libres s'affichent. Le créneau choisi est bloqué pour toi.</p>
-          <p class="note note-strong" id="depositNote" data-i18n="f.depositNote">Important : l'acompte de 50 % doit être versé par virement dans les 24 h après la réservation. Sans virement, ton rendez-vous sera annulé.</p>
+          <p class="note note-strong" id="depositNote" data-i18n="f.depositNote">Important : ta réservation est confirmée seulement après réception de l'acompte de 50 %, à verser par virement dans les 24 h. Sans virement, elle est annulée.</p>
           <p class="iban" data-iban hidden><span data-i18n="f.iban">Compte pour le virement</span> <b></b></p>
           <button class="btn" type="button" id="openCal" data-i18n="f.openCal">Voir mes disponibilités</button>
           <div class="cal-wrap" id="calWrap" hidden><div id="cal"></div></div>
@@ -184,8 +184,18 @@
           </div>
           <div class="done" id="done" hidden>
             <p class="done-script">Merci</p>
-            <p data-i18n="f.done">Ton créneau est réservé et tu reçois la confirmation par e-mail. Verse l'acompte de 50 % par virement dans les 24 h, sinon le rendez-vous sera annulé.</p>
-            <p class="iban" data-iban hidden><span data-i18n="f.iban">Compte pour le virement</span> <b></b></p>
+            <p data-i18n="f.done">Ta demande est enregistrée et ton créneau est bloqué. Verse l'acompte maintenant : je confirme ta séance dès réception. Sans virement dans les 24 h, la demande est annulée.</p>
+            <div class="pay" id="pay" hidden>
+              <div class="pay-qr" id="payQr" role="img" aria-label="QR code de paiement"></div>
+              <dl class="pay-info">
+                <div><dt data-i18n="pay.amount">Montant</dt><dd><span id="payAmount"></span><button type="button" class="copy" data-copy="payAmountRaw" data-i18n="pay.copy">Copier</button></dd></div>
+                <div><dt data-i18n="pay.payee">Bénéficiaire</dt><dd id="payPayee"></dd></div>
+                <div><dt>IBAN</dt><dd><span id="payIban"></span><button type="button" class="copy" data-copy="payIbanRaw" data-i18n="pay.copy">Copier</button></dd></div>
+                <div><dt data-i18n="pay.ref">Communication</dt><dd><span id="payRef"></span><button type="button" class="copy" data-copy="payRef" data-i18n="pay.copy">Copier</button></dd></div>
+              </dl>
+              <p class="pay-help" data-i18n="pay.help">Scanne le QR code avec l'app de ta banque : le virement est prérempli. Sur ton téléphone, copie les infos.</p>
+              <p class="pay-help" id="payRange" hidden data-i18n="pay.range">Pour un grand groupe, c'est l'acompte minimum. Je te confirme le montant exact selon le nombre de personnes.</p>
+            </div>
           </div>
         </fieldset>
       </div>
@@ -202,7 +212,7 @@
           <strong id="sumDeposit"></strong>
         </div>
         <p class="sum-note" id="sumNote"></p>
-        <p class="sum-fine" data-i18n="sum.fine">L'acompte se verse par virement dans les 24 h après la réservation, sinon le rendez-vous est annulé. Le solde se règle le jour du shooting.</p>
+        <p class="sum-fine" data-i18n="sum.fine">L'acompte se verse par virement dans les 24 h. Ta séance est confirmée dès réception, sinon la demande est annulée. Le solde se règle le jour du shooting.</p>
       </aside>
     </form>
   </section>
@@ -224,6 +234,7 @@
   </p>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="config.js"></script>
 <script src="script.js"></script>
 </body>

@@ -24,6 +24,7 @@ window.RL_CONFIG = {
 
   // Compte pour l'acompte de 50 % (virement sous 24 h)
   iban: "BE26 0638 4220 1929",
+  payee: "Ruth Sampasa",   // titulaire du compte, repris dans le QR code de paiement
 
   // Photos de la page d'accueil, dans assets/ (laisser vide pour ne rien afficher)
   gallery: [
