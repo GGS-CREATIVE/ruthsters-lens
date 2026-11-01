@@ -11,22 +11,22 @@
   ];
 
   const SHOOTS = [
-    { id: "portrait", group: "studio", min: 100, max: 100,
+    { id: "portrait", img: "assets/portrait-noir.jpg", group: "studio", min: 100, max: 100,
       fr: ["Portrait", "1 h de shooting · 1 personne"],
       en: ["Portrait", "1-hour shoot · 1 person"] },
-    { id: "birthday", group: "studio", min: 140, max: 140,
+    { id: "birthday", img: "assets/anniversaire.jpg", group: "studio", min: 140, max: 140,
       fr: ["Anniversaire / Créatif", "1 h de shooting créatif à thème · 1 personne"],
       en: ["Birthday / Creative", "1-hour themed creative shoot · 1 person"] },
-    { id: "duo", group: "studio", min: 150, max: 150,
+    { id: "duo", img: "assets/couple.jpg", group: "studio", min: 150, max: 150,
       fr: ["Duo / Petit groupe", "1 h de shooting · 2 à 4 personnes"],
       en: ["Duo / Small group", "1-hour shoot · 2 to 4 people"] },
-    { id: "large", group: "studio", min: 160, max: 220,
+    { id: "large", img: "assets/groupe.jpg", group: "studio", min: 160, max: 220,
       fr: ["Grand groupe", "1 h de shooting · plus de 4 personnes, prix selon la taille du groupe"],
       en: ["Large group", "1-hour shoot · more than 4 people, price depends on group size"] },
-    { id: "maternitySolo", group: "maternity", min: 100, max: 100,
+    { id: "maternitySolo", img: "assets/maternite-solo.jpg", group: "maternity", min: 100, max: 100,
       fr: ["Maternité solo", "1 h de shooting · future maman"],
       en: ["Maternity solo", "1-hour shoot · mum-to-be"] },
-    { id: "maternityFamily", group: "maternity", min: 150, max: 150,
+    { id: "maternityFamily", img: "assets/maternite-famille.jpg", group: "maternity", min: 150, max: 150,
       fr: ["Maternité couple / famille", "1 h de shooting · avec ton/ta partenaire ou ta famille"],
       en: ["Maternity couple / family", "1-hour shoot · with your partner or family"] },
     { id: "event", group: "outside", min: 250, max: 250,
@@ -171,20 +171,21 @@
   const shoot = () => SHOOTS.find(s => s.id === state.shoot);
 
   /* ---------- Rendu vitrine ---------- */
+  const ARROW = `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
   function renderPackages() {
     $("#packages").innerHTML = GROUPS.map(g => `
       <div class="pkg-group">
         <h3 class="pkg-group-title">${L(g)}</h3>
-        <div class="pkg-grid">
+        <div class="pkg-list">
           ${SHOOTS.filter(s => s.group === g.id).map(s => `
-            <article class="pkg">
-              <h4>${L(s)[0]}</h4>
-              <p>${L(s)[1]}</p>
-              <div class="pkg-foot">
-                <span class="tag">${priceOf(s)}</span>
-                <a href="#reserver" class="link" data-pick="${s.id}">${t("book")}</a>
-              </div>
-            </article>`).join("")}
+            <a class="pkg-row" href="#reserver" data-pick="${s.id}"${s.img ? ` data-img="${s.img}"` : ""}>
+              ${s.img ? `<img class="pkg-thumb" src="${s.img}" alt="" loading="lazy" decoding="async">` : `<span class="pkg-thumb pkg-thumb-empty" aria-hidden="true"></span>`}
+              <span class="pkg-name">${L(s)[0]}</span>
+              <span class="pkg-desc">${L(s)[1]}</span>
+              <span class="tag">${priceOf(s)}</span>
+              <span class="pkg-go" aria-label="${t("book")}">${ARROW}</span>
+            </a>`).join("")}
         </div>
       </div>`).join("");
   }
@@ -194,12 +195,12 @@
       <li><span>${L(x)[0]}</span><b>${x.from ? t("from") + " " : ""}${eur(x.price)}${x.qty ? " " + t("each") : ""}${x.hours ? " / h" : ""}</b></li>`).join("");
   }
 
+  // pellicule du hero : la série est dupliquée pour défiler en boucle sans couture
   function renderGallery() {
-    const imgs = CFG.gallery || [];
-    $("#gallery").innerHTML = imgs.map(g => {
-      const { src, alt = "", wide } = typeof g === "string" ? { src: g } : g;
-      return `<figure${wide ? ' class="wide"' : ""}><img src="${src}" alt="${alt}" loading="lazy" decoding="async"></figure>`;
-    }).join("");
+    const imgs = (CFG.gallery || []).map(g => typeof g === "string" ? { src: g } : g);
+    const frames = (hidden) => imgs.map(({ src, alt = "", wide }) =>
+      `<figure class="frame${wide ? " wide" : ""}"${hidden ? ' aria-hidden="true"' : ""}><img src="${src}" alt="${hidden ? "" : alt}" decoding="async"></figure>`).join("");
+    $("#gallery").innerHTML = `<div class="reel-track">${frames(false)}${frames(true)}</div>`;
     $("#gallery").hidden = !imgs.length;
   }
 
@@ -310,7 +311,13 @@
     $("#sumLines").innerHTML = c
       ? c.lines.map(l => `<li><span>${l.label}</span><b>${l.value}</b></li>`).join("")
       : `<li class="muted">${t("pickFirst")}</li>`;
-    $("#sumTotal").textContent = c ? c.total : eur(0);
+    const newTotal = c ? c.total : eur(0);
+    if ($("#sumTotal").textContent !== newTotal && Element.prototype.animate && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      [$("#sumTotal"), $("#mobileTotal")].forEach(el => el.animate(
+        [{ filter: "blur(3px)", opacity: .35, transform: "translateY(5px)" }, { filter: "none", opacity: 1, transform: "none" }],
+        { duration: 280, easing: "cubic-bezier(0.23, 1, 0.32, 1)" }));
+    }
+    $("#sumTotal").textContent = newTotal;
     $("#mobileTotal").textContent = c ? c.total : eur(0);
     $("#sumNote").textContent = c ? c.notes.join(" ") : "";
     $("#sumDepositRow").hidden = !(c && c.deposit);
@@ -542,6 +549,57 @@
   io.observe($("#reserver"));
 
   renderGallery();
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduceMotion && Element.prototype.animate) {
+    $$("#gallery .frame:not([aria-hidden]) img").forEach((img, i) => {
+      img.animate([
+        { filter: "brightness(2.4) contrast(.45) grayscale(1) blur(6px)", opacity: .35 },
+        { filter: "brightness(1.25) contrast(.85) grayscale(.6) blur(1px)", opacity: .9, offset: .55 },
+        { filter: "none", opacity: 1 }
+      ], { duration: 1500, delay: 250 + i * 140, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "backwards" });
+    });
+  }
+
+  // aperçu photo qui suit le curseur sur la liste des séances (souris uniquement)
+  if (matchMedia("(hover: hover) and (pointer: fine)").matches && !reduceMotion) {
+    const peek = document.createElement("div");
+    peek.className = "peek";
+    peek.setAttribute("aria-hidden", "true");
+    peek.innerHTML = "<img alt=''><img alt=''>";
+    document.body.appendChild(peek);
+    const [a1, a2] = peek.querySelectorAll("img");
+    let front = a1, cur = "", tx = 0, ty = 0, x = 0, y = 0, raf = 0;
+    const loop = () => {
+      x += (tx - x) * 0.16; y += (ty - y) * 0.16;
+      peek.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${(tx - x) * 0.02}deg)`;
+      raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.3 ? requestAnimationFrame(loop) : 0;
+    };
+    $("#packages").addEventListener("pointermove", e => {
+      tx = e.clientX + 28; ty = e.clientY - 150;
+      if (!raf) raf = requestAnimationFrame(loop);
+    });
+    $("#packages").addEventListener("pointerover", e => {
+      const row = e.target.closest(".pkg-row");
+      const src = row && row.dataset.img;
+      if (!src) { peek.classList.remove("on"); return; }
+      if (!peek.classList.contains("on")) { x = tx = e.clientX + 28; y = ty = e.clientY - 150; }
+      if (src !== cur) {
+        const back = front === a1 ? a2 : a1;
+        back.src = src; back.classList.add("show"); front.classList.remove("show");
+        front = back; cur = src;
+      }
+      peek.classList.add("on");
+    });
+    $("#packages").addEventListener("pointerleave", () => peek.classList.remove("on"));
+  }
+
+  // la pellicule s'arrête quand elle sort de l'écran
+  new IntersectionObserver(([en]) => $("#gallery").classList.toggle("paused", !en.isIntersecting)).observe($("#gallery"));
+
+  // en-tête sombre tant que le hero noir est sous lui
+  const top = $(".top");
+  new IntersectionObserver(([en]) => top.classList.toggle("on-dark", en.isIntersecting), { rootMargin: "-72px 0px -85% 0px" })
+    .observe($(".hero"));
   if (CFG.iban) $$("[data-iban]").forEach(el => { el.querySelector("b").textContent = CFG.iban; el.hidden = false; });
   applyLang();
 })();
