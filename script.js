@@ -122,7 +122,7 @@
     "f.depositNote": "Important: your booking is only confirmed once the 50% deposit arrives, paid by bank transfer within 24 hours. Without it, it is cancelled.",
     "sum.deposit": "50% deposit within 24 h",
     "f.iban": "Account for the transfer",
-    "pay.amount": "Amount", "pay.payee": "Payee", "pay.ref": "Reference", "pay.copy": "Copy",
+    "pay.amount": "Amount", "pay.payee": "Payee", "pay.payeeNote": "Account managed by Gloire Goniaga for Ruthsters Lens.", "pay.ref": "Reference", "pay.copy": "Copy",
     "pay.help": "Scan the QR code with your banking app: the transfer is pre-filled. On your phone, copy the details.",
     "pay.range": "For a large group, this is the minimum deposit. I'll confirm the exact amount based on the number of people.",
     "err.shoot": "Pick a session.", "err.people": "Tell me how many people.", "err.occasion": "Tell me the occasion.",
