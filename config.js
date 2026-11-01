@@ -26,6 +26,17 @@ window.RL_CONFIG = {
   iban: "BE26 0638 4220 1929",
   payee: "Gloire Goniaga",   // titulaire du compte, repris dans le QR code de paiement
 
+  // Grande photo du haut de page (elles s'enchaînent)
+  hero: [
+    { src: "assets/creatif-jaune.jpg", alt: "Shooting créatif, tenue jaune" },
+    { src: "assets/roses.jpg", alt: "Shooting créatif aux roses rouges" },
+    { src: "assets/maternite-solo.jpg", alt: "Séance maternité solo" },
+    { src: "assets/portrait-blanc.jpg", alt: "Portrait en robe blanche" }
+  ],
+
+  // Photo de Ruth pour « Qui suis-je » (vide = section sans photo)
+  aboutPhoto: "",
+
   // Photos de la page d'accueil, dans assets/ (laisser vide pour ne rien afficher)
   gallery: [
     { src: "assets/creatif-jaune.jpg", alt: "Shooting créatif, tenue jaune" },

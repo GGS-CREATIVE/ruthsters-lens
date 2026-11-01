@@ -94,18 +94,22 @@
   };
 
   const EN = {
-    "nav.shoots": "Sessions", "nav.extras": "Extras", "nav.info": "Info", "nav.book": "Book",
+    "nav.shoots": "Sessions", "nav.extras": "Extras", "nav.about": "About", "nav.info": "Info", "nav.book": "Book",
+    "about.title": "I'm <em>Ruth</em>",
+    "about.lead": "Behind Ruthsters Lens is Ruth Sampasa. My way of working fits in one sentence: capturing the essence of life, one beautifully framed glimpse at a time.",
+    "about.p": "I photograph portraits, birthdays, pregnancies, families and groups in my studio 30 minutes from Brussels, and I travel to your events.",
+    "f.next": "Continue", "f.prev": "Back",
     "hero.quote": "“One beautifully framed glimpse at a time”",
     "hero.lead": "Portraits, birthdays, maternity, groups, events and weddings, 30 minutes from Brussels. Pick your session, see my availability and lock in your slot.",
     "hero.cta": "Book my shoot", "hero.cta2": "See the prices",
-    "shoots.title": "Sessions", "shoots.sub": "Every studio session includes a 1-hour shoot, 10 edited photos and all the unedited (raw) photos.",
-    "extras.title": "Extras", "extras.sub": "Add them to any session, right in the booking.",
-    "info.title": "Good to know",
+    "shoots.title": "The <em>sessions</em>", "shoots.sub": "Every studio session includes a 1-hour shoot, 10 edited photos and all the unedited (raw) photos.",
+    "extras.title": "The <em>extras</em>", "extras.sub": "Add them to any session, right in the booking.",
+    "info.title": "Good to <em>know</em>",
     "info.s1": "Pick your session, your extras and a slot among my available times.",
     "info.s2": "Your slot is blocked in my calendar while I wait for your deposit.",
     "info.s3": "You pay a 50% deposit by bank transfer within 24 hours (a QR code makes it quick). Once it arrives, I confirm your session. Without it, the request is cancelled.",
     "info.s4": "On the day, please arrive 15 minutes early.",
-    "book.title": "Book", "book.sub": "The total updates as you fill in the form.",
+    "book.title": "Book your <em>session</em>", "book.sub": "The total updates as you fill in the form.",
     "f.s1": "Your session", "f.s2": "Details", "f.s3": "Extras", "f.optional": "optional", "f.s4": "Your contact", "f.s5": "Your slot",
     "f.duration": "Shoot length", "f.people": "Number of people", "f.occasion": "What's the occasion?", "f.choose": "Choose…",
     "occ.proposal": "Proposal", "occ.baptism": "Baptism", "occ.birthday": "Birthday party", "occ.other": "Other",
@@ -141,6 +145,7 @@
   try { if (localStorage.getItem("rl-lang") === "en") lang = "en"; } catch (e) {}
   const FR = {};
   $$("[data-i18n]").forEach(el => { FR[el.dataset.i18n] = el.textContent; });
+  $$("[data-i18n-html]").forEach(el => { FR[el.dataset.i18nHtml] = el.innerHTML; });
   const t = k => T[lang][k];
   const L = o => o[lang];
 
@@ -149,6 +154,10 @@
     $$("[data-i18n]").forEach(el => {
       const k = el.dataset.i18n;
       el.textContent = lang === "en" ? (EN[k] ?? FR[k]) : FR[k];
+    });
+    $$("[data-i18n-html]").forEach(el => {
+      const k = el.dataset.i18nHtml;
+      el.innerHTML = lang === "en" ? (EN[k] ?? FR[k]) : FR[k];
     });
     $("#lang").textContent = lang === "fr" ? "EN" : "FR";
     $("#lang").setAttribute("aria-label", lang === "fr" ? "English" : "Français");
@@ -166,7 +175,7 @@
   const priceOf = s => s.quote ? t("quote") : range(s.min, s.max);
 
   /* ---------- État ---------- */
-  const state = { shoot: null, extras: {}, photos: 0, hours: 0 };
+  const state = { shoot: null, extras: {}, photos: 0, hours: 0, step: 1, reached: 1 };
   const MAX_EXTRA_HOURS = 3;
   const shoot = () => SHOOTS.find(s => s.id === state.shoot);
 
@@ -336,7 +345,10 @@
   }
 
   /* ---------- Validation ---------- */
-  function validate() {
+  // à quelle étape appartient chaque erreur
+  const ERR_STEP = { shoot: 1, people: 2, occasion: 2, occasionOther: 2, ceremony: 2, weddingDate: 2, location: 2, name: 4, email: 4 };
+
+  function validate(upTo = 5) {
     const s = shoot();
     const errs = new Set();
     const val = id => $("#" + id).value.trim();
@@ -356,10 +368,13 @@
     if (!val("name")) errs.add("name");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val("email"))) errs.add("email");
 
+    [...errs].forEach(k => { if (ERR_STEP[k] > upTo) errs.delete(k); });
     $$("[data-err]").forEach(e => e.classList.toggle("show", errs.has(e.dataset.err)));
     if (errs.size) {
+      const firstStep = Math.min(...[...errs].map(k => ERR_STEP[k]));
+      if (firstStep !== state.step) goStep(firstStep, true);
       const first = $$("[data-err]").find(e => errs.has(e.dataset.err) && !e.closest("[hidden]"));
-      if (first) first.closest(".step").scrollIntoView({ behavior: "smooth", block: "start" });
+      if (first) first.closest(".field, .sub, .step").scrollIntoView({ behavior: "smooth", block: "center" });
     }
     return !errs.size;
   }
@@ -539,6 +554,7 @@
     renderChoices();
     renderHours();
     update();
+    goStep(2, true);
   });
 
   // date du mariage : pas dans le passé
@@ -550,15 +566,131 @@
 
   renderGallery();
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (!reduceMotion && Element.prototype.animate) {
-    $$("#gallery .frame:not([aria-hidden]) img").forEach((img, i) => {
-      img.animate([
-        { filter: "brightness(2.4) contrast(.45) grayscale(1) blur(6px)", opacity: .35 },
-        { filter: "brightness(1.25) contrast(.85) grayscale(.6) blur(1px)", opacity: .9, offset: .55 },
-        { filter: "none", opacity: 1 }
-      ], { duration: 1500, delay: 250 + i * 140, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "backwards" });
-    });
+  const canAnimate = !reduceMotion && !!Element.prototype.animate;
+
+  // développement façon bac de révélateur : de surexposé à net
+  const develop = (img, delay = 0) => canAnimate && img.animate([
+    { filter: "brightness(2.4) contrast(.45) grayscale(1) blur(6px)", opacity: .35 },
+    { filter: "brightness(1.25) contrast(.85) grayscale(.6) blur(1px)", opacity: .9, offset: .55 },
+    { filter: "none", opacity: 1 }
+  ], { duration: 1500, delay, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "backwards" });
+
+  const reelObs = new IntersectionObserver(([en]) => {
+    if (!en.isIntersecting) return;
+    $$("#gallery .frame:not([aria-hidden]) img").forEach((img, i) => develop(img, i * 120));
+    reelObs.disconnect();
+  }, { threshold: 0.25 });
+  reelObs.observe($("#gallery"));
+
+  /* ---------- Grande photo du hero ---------- */
+  const slides = (CFG.hero || []).map(g => typeof g === "string" ? { src: g } : g);
+  if (slides.length) {
+    $("#stage").innerHTML = slides.map(({ src, alt = "" }, i) =>
+      `<figure class="slide${i === 0 ? " on" : ""}"${i ? ' aria-hidden="true"' : ""}><img src="${src}" alt="${alt}" ${i ? 'loading="lazy"' : 'fetchpriority="high"'} decoding="async"></figure>`).join("")
+      + `<p class="stage-count" aria-hidden="true"><span id="stageNow">01</span> / ${String(slides.length).padStart(2, "0")}</p>`;
+    const first = $("#stage .slide img");
+    if (first.complete) develop(first, 120); else first.addEventListener("load", () => develop(first), { once: true });
+    if (slides.length > 1 && !reduceMotion) {
+      let cur = 0;
+      setInterval(() => {
+        if (document.hidden) return;
+        const all = $$("#stage .slide");
+        all[cur].classList.remove("on"); all[cur].setAttribute("aria-hidden", "true");
+        cur = (cur + 1) % all.length;
+        all[cur].classList.add("on"); all[cur].removeAttribute("aria-hidden");
+        $("#stageNow").textContent = String(cur + 1).padStart(2, "0");
+      }, 5500);
+    }
+  } else {
+    $("#stage").hidden = true;
   }
+
+  /* ---------- Qui suis-je ---------- */
+  if (CFG.aboutPhoto) {
+    $("#aboutPhoto img").src = CFG.aboutPhoto;
+    $("#aboutPhoto").hidden = false;
+    $(".about").classList.add("has-photo");
+  }
+
+  /* ---------- Visionneuse ---------- */
+  const lb = $("#lightbox");
+  const gal = (CFG.gallery || []).map(g => typeof g === "string" ? { src: g } : g);
+  let lbIndex = 0;
+  function lbShow(i, dir = 0) {
+    lbIndex = (i + gal.length) % gal.length;
+    const img = $("#lbImg");
+    img.src = gal[lbIndex].src;
+    img.alt = gal[lbIndex].alt || "";
+    $("#lbCap").textContent = gal[lbIndex].alt || "";
+    $("#lbCount").textContent = `${lbIndex + 1} / ${gal.length}`;
+    if (canAnimate) img.animate(
+      [{ opacity: 0, transform: `translateX(${dir * 24}px) scale(.98)`, filter: "blur(4px)" }, { opacity: 1, transform: "none", filter: "none" }],
+      { duration: 320, easing: "cubic-bezier(0.23, 1, 0.32, 1)" });
+  }
+  $("#gallery").addEventListener("click", e => {
+    const f = e.target.closest(".frame");
+    if (!f || !lb.showModal) return;
+    const n = $$("#gallery .frame").indexOf(f) % gal.length;
+    lbShow(n);
+    lb.showModal();
+    $("#gallery").classList.add("paused");
+  });
+  lb.addEventListener("click", e => {
+    const b = e.target.closest("[data-lb]");
+    if (b) {
+      if (b.dataset.lb === "close") lb.close();
+      else lbShow(lbIndex + (b.dataset.lb === "next" ? 1 : -1), b.dataset.lb === "next" ? 1 : -1);
+    } else if (e.target === lb) lb.close();
+  });
+  lb.addEventListener("keydown", e => {
+    if (e.key === "ArrowRight") lbShow(lbIndex + 1, 1);
+    if (e.key === "ArrowLeft") lbShow(lbIndex - 1, -1);
+  });
+  lb.addEventListener("close", () => $("#gallery").classList.remove("paused"));
+  let swipeX = null;
+  lb.addEventListener("pointerdown", e => { swipeX = e.clientX; });
+  lb.addEventListener("pointerup", e => {
+    if (swipeX === null) return;
+    const dx = e.clientX - swipeX; swipeX = null;
+    if (Math.abs(dx) > 50) lbShow(lbIndex + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
+  });
+
+  /* ---------- Réservation en étapes ---------- */
+  function goStep(n, force = false, quiet = false) {
+    n = Math.max(1, Math.min(5, n));
+    if (!force && n > state.step && !validate(state.step)) return;
+    state.reached = Math.max(state.reached, n);
+    const dir = n > state.step ? 1 : -1;
+    state.step = n;
+    $$(".step").forEach(st => st.classList.toggle("active", +st.dataset.step === n));
+    $$("#progress li").forEach(li => {
+      const k = +li.dataset.go;
+      li.classList.toggle("current", k === n);
+      li.classList.toggle("is-done", k < n);
+      li.querySelector("button").disabled = k > state.reached;
+    });
+    $("#progressFill").style.transform = `scaleX(${(n - 1) / 4})`;
+    $("#mobileNext").hidden = n === 5;
+    const active = $(`.step[data-step="${n}"]`);
+    if (quiet) return;
+    if (canAnimate) active.animate(
+      [{ opacity: 0, transform: `translateX(${dir * 18}px)` }, { opacity: 1, transform: "none" }],
+      { duration: 300, easing: "cubic-bezier(0.23, 1, 0.32, 1)" });
+    const r = $("#reserver .book-grid").getBoundingClientRect();
+    if (r.top < 0 || r.top > innerHeight * 0.6) $("#progress").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+  }
+  $("#form").addEventListener("click", e => {
+    if (e.target.closest("[data-next]")) goStep(state.step + 1);
+    if (e.target.closest("[data-prev]")) goStep(state.step - 1, true);
+  });
+  $("#progress").addEventListener("click", e => {
+    const li = e.target.closest("[data-go]");
+    if (!li) return;
+    const n = +li.dataset.go;
+    if (n <= state.reached) goStep(n, n < state.step);
+  });
+  $("#mobileNext").addEventListener("click", () => goStep(state.step + 1));
+  goStep(1, true, true);
 
   // aperçu photo qui suit le curseur sur la liste des séances (souris uniquement)
   if (matchMedia("(hover: hover) and (pointer: fine)").matches && !reduceMotion) {

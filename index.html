@@ -8,6 +8,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Mrs+Saint+Delafield&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ruthsters Lens · Réserve ton shooting photo">
+<meta property="og:description" content="Portraits, anniversaires, maternité, groupes, événements et mariages, à 30 min de Bruxelles. Choisis ta séance et ton créneau en ligne.">
+<meta property="og:image" content="https://ggs-creative.github.io/ruthsters-lens/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://ggs-creative.github.io/ruthsters-lens/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#111111">
+<link rel="icon" href="assets/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -17,6 +28,7 @@
   <nav class="nav">
     <a href="#seances" data-i18n="nav.shoots">Séances</a>
     <a href="#extras" data-i18n="nav.extras">Suppléments</a>
+    <a href="#moi" data-i18n="nav.about">Qui suis-je</a>
     <a href="#infos" data-i18n="nav.info">Infos</a>
   </nav>
   <div class="top-actions">
@@ -28,6 +40,8 @@
 <main id="top">
 
   <section class="hero">
+    <div class="hero-grid">
+    <div class="hero-stage" id="stage" aria-roledescription="carrousel"></div>
     <div class="hero-copy">
     <h1 class="hero-title"><span class="hero-brand">Ruthsters Lens</span> <span class="hero-word">Photography</span></h1>
     <p class="hero-quote" data-i18n="hero.quote">« Un magnifique aperçu, à la fois soigneusement cadré »</p>
@@ -37,12 +51,13 @@
       <a class="link" href="#seances" data-i18n="hero.cta2">Voir les tarifs</a>
     </div>
     </div>
+    </div>
     <div class="reel" id="gallery"></div>
   </section>
 
   <section class="section" id="seances">
     <div class="section-head">
-      <h2 data-i18n="shoots.title">Les séances</h2>
+      <h2 data-i18n-html="shoots.title">Les <em>séances</em></h2>
       <p data-i18n="shoots.sub">Chaque séance studio comprend 1 h de shooting, 10 photos retouchées et les photos brutes offertes.</p>
     </div>
     <div id="packages"></div>
@@ -50,15 +65,25 @@
 
   <section class="section section-dark" id="extras">
     <div class="section-head">
-      <h2 data-i18n="extras.title">Suppléments</h2>
+      <h2 data-i18n-html="extras.title">Les <em>suppléments</em></h2>
       <p data-i18n="extras.sub">À ajouter à n'importe quelle séance, directement dans la réservation.</p>
     </div>
     <ul class="extras-list" id="extrasList"></ul>
   </section>
 
+  <section class="section about" id="moi">
+    <figure class="about-photo" id="aboutPhoto" hidden><img alt="Ruth, photographe de Ruthsters Lens" loading="lazy" decoding="async"></figure>
+    <div class="about-text">
+      <h2 data-i18n-html="about.title">Moi, c'est <em>Ruth</em></h2>
+      <p class="about-lead" data-i18n="about.lead">Derrière Ruthsters Lens, il y a Ruth Sampasa. Ma façon de travailler tient en une phrase : capturer l'essence de la vie, un instant soigneusement cadré à la fois.</p>
+      <p data-i18n="about.p">Je photographie les portraits, les anniversaires, les grossesses, les familles et les groupes dans mon studio à 30 min de Bruxelles, et je me déplace pour tes événements.</p>
+      <p class="about-sign">Ruth</p>
+    </div>
+  </section>
+
   <section class="section" id="infos">
     <div class="section-head">
-      <h2 data-i18n="info.title">Bon à savoir</h2>
+      <h2 data-i18n-html="info.title">Bon à <em>savoir</em></h2>
     </div>
     <ol class="steps">
       <li><b>01</b><span data-i18n="info.s1">Tu choisis ta séance, tes suppléments et ton créneau parmi mes disponibilités.</span></li>
@@ -70,20 +95,29 @@
 
   <section class="section book" id="reserver">
     <div class="section-head">
-      <h2 data-i18n="book.title">Réserver</h2>
+      <h2 data-i18n-html="book.title">Réserve ta <em>séance</em></h2>
       <p data-i18n="book.sub">Le total se met à jour pendant que tu remplis.</p>
     </div>
 
     <form class="book-grid" id="form" novalidate>
       <div class="book-steps">
+        <ol class="progress" id="progress" aria-label="Étapes">
+          <li data-go="1"><button type="button"><b>1</b><span data-i18n="f.s1">Ta séance</span></button></li>
+          <li data-go="2"><button type="button"><b>2</b><span data-i18n="f.s2">Les détails</span></button></li>
+          <li data-go="3"><button type="button"><b>3</b><span data-i18n="f.s3">Suppléments</span></button></li>
+          <li data-go="4"><button type="button"><b>4</b><span data-i18n="f.s4">Tes coordonnées</span></button></li>
+          <li data-go="5"><button type="button"><b>5</b><span data-i18n="f.s5">Ton créneau</span></button></li>
+        </ol>
+        <div class="progress-bar" aria-hidden="true"><i id="progressFill"></i></div>
 
-        <fieldset class="step">
+        <fieldset class="step" data-step="1">
           <legend><b>1</b><span data-i18n="f.s1">Ta séance</span></legend>
           <div class="choice-grid" id="choices"></div>
           <em class="err" data-err="shoot" data-i18n="err.shoot">Choisis une séance.</em>
+          <div class="step-nav"><button type="button" class="btn" data-next data-i18n="f.next">Continuer</button></div>
         </fieldset>
 
-        <fieldset class="step">
+        <fieldset class="step" data-step="2">
           <legend><b>2</b><span data-i18n="f.s2">Les détails</span></legend>
 
           <fieldset class="cond sub" data-show="studio event">
@@ -140,14 +174,16 @@
 
           <p class="note cond" data-show="event" data-i18n="f.travelNote">Hors studio, des frais de déplacement (50 €) peuvent s'ajouter selon le lieu. Je te le confirme après la réservation.</p>
           <p class="note cond" data-show="wedding" data-i18n="f.weddingNote">Pour les mariages, je t'envoie un devis personnalisé selon les cérémonies et le lieu.</p>
+          <div class="step-nav"><button type="button" class="btn btn-ghost" data-prev data-i18n="f.prev">Retour</button><button type="button" class="btn" data-next data-i18n="f.next">Continuer</button></div>
         </fieldset>
 
-        <fieldset class="step">
+        <fieldset class="step" data-step="3">
           <legend><b>3</b><span data-i18n="f.s3">Suppléments</span> <small data-i18n="f.optional">facultatif</small></legend>
           <div class="extra-rows" id="extraRows"></div>
+          <div class="step-nav"><button type="button" class="btn btn-ghost" data-prev data-i18n="f.prev">Retour</button><button type="button" class="btn" data-next data-i18n="f.next">Continuer</button></div>
         </fieldset>
 
-        <fieldset class="step">
+        <fieldset class="step" data-step="4">
           <legend><b>4</b><span data-i18n="f.s4">Tes coordonnées</span></legend>
           <div class="row">
             <label class="field">
@@ -169,9 +205,10 @@
             <span data-i18n="f.notes">Autre chose ? (thème, tenues, idées…)</span>
             <textarea name="notes" id="notes" rows="3"></textarea>
           </label>
+          <div class="step-nav"><button type="button" class="btn btn-ghost" data-prev data-i18n="f.prev">Retour</button><button type="button" class="btn" data-next data-i18n="f.next">Continuer</button></div>
         </fieldset>
 
-        <fieldset class="step" id="slotStep">
+        <fieldset class="step" data-step="5" id="slotStep">
           <legend><b>5</b><span id="s5label" data-i18n="f.s5">Ton créneau</span></legend>
           <p class="note" id="slotIntro" data-i18n="f.slotIntro">Seuls mes jours et heures encore libres s'affichent. Le créneau choisi est bloqué pour toi.</p>
           <p class="note note-strong" id="depositNote" data-i18n="f.depositNote">Important : ta réservation est confirmée seulement après réception de l'acompte de 50 %, à verser par virement dans les 24 h. Sans virement, elle est annulée.</p>
@@ -197,6 +234,7 @@
               <p class="pay-help" id="payRange" hidden data-i18n="pay.range">Pour un grand groupe, c'est l'acompte minimum. Je te confirme le montant exact selon le nombre de personnes.</p>
             </div>
           </div>
+          <div class="step-nav"><button type="button" class="btn btn-ghost" data-prev data-i18n="f.prev">Retour</button></div>
         </fieldset>
       </div>
 
@@ -221,8 +259,16 @@
 
 <div class="mobile-bar" id="mobileBar">
   <div><small data-i18n="sum.total">Total estimé</small><strong id="mobileTotal">0 €</strong></div>
-  <a class="btn btn-small btn-light" href="#slotStep" data-i18n="mb.go">Mon créneau</a>
+  <button type="button" class="btn btn-small btn-light" id="mobileNext" data-i18n="f.next">Continuer</button>
 </div>
+
+<dialog class="lightbox" id="lightbox" aria-label="Photo">
+  <figure class="lb-figure"><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure>
+  <button type="button" class="lb-btn lb-close" data-lb="close" aria-label="Fermer"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+  <button type="button" class="lb-btn lb-prev" data-lb="prev" aria-label="Photo précédente"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <button type="button" class="lb-btn lb-next" data-lb="next" aria-label="Photo suivante"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <p class="lb-count" id="lbCount"></p>
+</dialog>
 
 <footer class="foot">
   <p class="foot-script" data-i18n="foot.thanks">Merci pour votre confiance</p>
