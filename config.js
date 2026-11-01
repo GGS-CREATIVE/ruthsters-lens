@@ -22,6 +22,9 @@ window.RL_CONFIG = {
   email: "",
   instagram: "ruthsters_lens",
 
+  // Compte pour l'acompte de 50 % (virement sous 24 h)
+  iban: "BE26 0638 4220 1929",
+
   // Photos de la page d'accueil, dans assets/ (laisser vide pour ne rien afficher)
   gallery: [
     { src: "assets/creatif-jaune.jpg", alt: "Shooting créatif, tenue jaune" },

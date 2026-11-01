@@ -62,7 +62,7 @@
     <ol class="steps">
       <li><b>01</b><span data-i18n="info.s1">Tu choisis ta séance, tes suppléments et ton créneau parmi mes disponibilités.</span></li>
       <li><b>02</b><span data-i18n="info.s2">Ton créneau est bloqué dans mon agenda. Personne d'autre ne peut le prendre.</span></li>
-      <li><b>03</b><span data-i18n="info.s3">Un acompte de 50 % confirme la réservation.</span></li>
+      <li><b>03</b><span data-i18n="info.s3">Tu verses un acompte de 50 % par virement dans les 24 h. Sans virement, le rendez-vous est annulé.</span></li>
       <li><b>04</b><span data-i18n="info.s4">Le jour J, viens 15 minutes en avance.</span></li>
     </ol>
   </section>
@@ -173,6 +173,8 @@
         <fieldset class="step" id="slotStep">
           <legend><b>5</b><span id="s5label" data-i18n="f.s5">Ton créneau</span></legend>
           <p class="note" id="slotIntro" data-i18n="f.slotIntro">Seuls mes jours et heures encore libres s'affichent. Le créneau choisi est bloqué pour toi.</p>
+          <p class="note note-strong" id="depositNote" data-i18n="f.depositNote">Important : l'acompte de 50 % doit être versé par virement dans les 24 h après la réservation. Sans virement, ton rendez-vous sera annulé.</p>
+          <p class="iban" data-iban hidden><span data-i18n="f.iban">Compte pour le virement</span> <b></b></p>
           <button class="btn" type="button" id="openCal" data-i18n="f.openCal">Voir mes disponibilités</button>
           <div class="cal-wrap" id="calWrap" hidden><div id="cal"></div></div>
           <div class="send" id="sendWrap" hidden>
@@ -182,7 +184,8 @@
           </div>
           <div class="done" id="done" hidden>
             <p class="done-script">Merci</p>
-            <p data-i18n="f.done">Ton créneau est réservé. Tu reçois la confirmation par e-mail, puis les infos pour l'acompte de 50 %.</p>
+            <p data-i18n="f.done">Ton créneau est réservé et tu reçois la confirmation par e-mail. Verse l'acompte de 50 % par virement dans les 24 h, sinon le rendez-vous sera annulé.</p>
+            <p class="iban" data-iban hidden><span data-i18n="f.iban">Compte pour le virement</span> <b></b></p>
           </div>
         </fieldset>
       </div>
@@ -194,8 +197,12 @@
           <span data-i18n="sum.total">Total estimé</span>
           <strong id="sumTotal">0 €</strong>
         </div>
+        <div class="sum-deposit" id="sumDepositRow" hidden>
+          <span data-i18n="sum.deposit">Acompte 50 % sous 24 h</span>
+          <strong id="sumDeposit"></strong>
+        </div>
         <p class="sum-note" id="sumNote"></p>
-        <p class="sum-fine" data-i18n="sum.fine">Acompte de 50 % à la confirmation. Le solde se règle le jour du shooting.</p>
+        <p class="sum-fine" data-i18n="sum.fine">L'acompte se verse par virement dans les 24 h après la réservation, sinon le rendez-vous est annulé. Le solde se règle le jour du shooting.</p>
       </aside>
     </form>
   </section>

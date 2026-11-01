@@ -103,7 +103,7 @@
     "info.title": "Good to know",
     "info.s1": "Pick your session, your extras and a slot among my available times.",
     "info.s2": "Your slot is blocked in my calendar. Nobody else can take it.",
-    "info.s3": "A 50% deposit confirms the booking.",
+    "info.s3": "You pay a 50% deposit by bank transfer within 24 hours. Without it, the booking is cancelled.",
     "info.s4": "On the day, please arrive 15 minutes early.",
     "book.title": "Book", "book.sub": "The total updates as you fill in the form.",
     "f.s1": "Your session", "f.s2": "Details", "f.s3": "Extras", "f.optional": "optional", "f.s4": "Your contact", "f.s5": "Your slot",
@@ -118,13 +118,16 @@
     "f.slotIntro": "Only my free days and times are shown. The slot you pick is blocked for you.",
     "f.openCal": "See my availability",
     "f.copied": "Message copied. Paste it into the Instagram chat.",
-    "f.done": "Your slot is booked. You'll get a confirmation email, then the details for the 50% deposit.",
+    "f.done": "Your slot is booked and you'll get a confirmation email. Pay the 50% deposit by bank transfer within 24 hours, otherwise the booking will be cancelled.",
+    "f.depositNote": "Important: the 50% deposit must be paid by bank transfer within 24 hours of booking. Without it, your booking will be cancelled.",
+    "sum.deposit": "50% deposit within 24 h",
+    "f.iban": "Account for the transfer",
     "err.shoot": "Pick a session.", "err.people": "Tell me how many people.", "err.occasion": "Tell me the occasion.",
     "err.ceremony": "Pick at least one ceremony.", "err.date": "Pick a date.",
     "err.location": "Tell me the place, the travel fee depends on it.", "err.name": "Tell me your name.",
     "err.email": "Enter a valid email, the confirmation is sent there.",
     "sum.title": "Your booking", "sum.total": "Estimated total",
-    "sum.fine": "50% deposit to confirm. The rest is paid on the day of the shoot.",
+    "sum.fine": "The deposit is paid by bank transfer within 24 hours of booking, otherwise the booking is cancelled. The rest is paid on the day of the shoot.",
     "mb.go": "My slot",
     "foot.thanks": "Thank you for your trust",
     "foot.verse": "Colossians 3:23 · “Whatever you do, work at it with all your heart, as working for the Lord, not for human masters.”"
@@ -275,7 +278,10 @@
       if (s.id === "event") notes.push(t("noteTravel"));
       if (from) notes.push(t("noteFlowers"));
     }
-    return { lines, total, notes };
+    // acompte : la moitié du total (pour une fourchette, la moitié de chaque borne)
+    const half = n => Math.round(n / 2);
+    const deposit = s.quote ? null : (from ? t("from") + " " + eur(half(min)) : range(half(min), half(max)));
+    return { lines, total, notes, deposit };
   }
 
   /* ---------- Mise à jour ---------- */
@@ -304,11 +310,15 @@
     $("#sumTotal").textContent = c ? c.total : eur(0);
     $("#mobileTotal").textContent = c ? c.total : eur(0);
     $("#sumNote").textContent = c ? c.notes.join(" ") : "";
+    $("#sumDepositRow").hidden = !(c && c.deposit);
+    $("#sumDeposit").textContent = c && c.deposit ? c.deposit : "";
 
     const wedding = s && s.quote;
     const hasCal = !!calUser();
     $("#s5label").textContent = wedding ? t("s5wedding") : (lang === "en" ? EN["f.s5"] : FR["f.s5"]);
     $("#slotIntro").hidden = wedding || !hasCal;
+    $("#depositNote").hidden = wedding || !hasCal;
+    $("#depositNote + [data-iban]").hidden = wedding || !hasCal || !CFG.iban;
     $("#openCal").hidden = wedding || !hasCal || !$("#calWrap").hidden || !$("#done").hidden;
     $("#sendWrap").hidden = !(wedding || !hasCal);
     $("#sendIntro").textContent = wedding ? t("sendIntroWedding") : t("sendIntroNoCal");
@@ -492,5 +502,6 @@
   io.observe($("#reserver"));
 
   renderGallery();
+  if (CFG.iban) $$("[data-iban]").forEach(el => { el.querySelector("b").textContent = CFG.iban; el.hidden = false; });
   applyLang();
 })();
