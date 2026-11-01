@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ruthsters Lens · Réserver ton shooting</title>
+<meta name="description" content="Ruthsters Lens, photographe à 30 min de Bruxelles. Portrait, anniversaire, duo, groupe, maternité, événements et mariages. Choisis ta séance et réserve ton créneau en ligne.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Mrs+Saint+Delafield&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="top">
+  <a class="logo" href="#top">Ruthsters<span>Lens</span></a>
+  <nav class="nav">
+    <a href="#seances" data-i18n="nav.shoots">Séances</a>
+    <a href="#extras" data-i18n="nav.extras">Suppléments</a>
+    <a href="#infos" data-i18n="nav.info">Infos</a>
+  </nav>
+  <div class="top-actions">
+    <button class="lang" type="button" id="lang" aria-label="English">EN</button>
+    <a class="btn btn-small" href="#reserver" data-i18n="nav.book">Réserver</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <p class="hero-kicker">Ruthsters Lens</p>
+    <h1 class="hero-word" >Photography</h1>
+    <p class="hero-quote" data-i18n="hero.quote">« Un magnifique aperçu, à la fois soigneusement cadré »</p>
+    <p class="hero-lead" data-i18n="hero.lead">Portraits, anniversaires, maternité, groupes, événements et mariages, à 30 min de Bruxelles. Choisis ta séance, vois mes disponibilités et bloque ton créneau.</p>
+    <div class="hero-cta">
+      <a class="btn" href="#reserver" data-i18n="hero.cta">Réserver mon shooting</a>
+      <a class="link" href="#seances" data-i18n="hero.cta2">Voir les tarifs</a>
+    </div>
+    <div class="hero-gallery" id="gallery"></div>
+  </section>
+
+  <section class="section" id="seances">
+    <div class="section-head">
+      <h2 data-i18n="shoots.title">Les séances</h2>
+      <p data-i18n="shoots.sub">Chaque séance studio comprend 1 h de shooting, 10 photos retouchées et les photos brutes offertes.</p>
+    </div>
+    <div id="packages"></div>
+  </section>
+
+  <section class="section section-dark" id="extras">
+    <div class="section-head">
+      <h2 data-i18n="extras.title">Suppléments</h2>
+      <p data-i18n="extras.sub">À ajouter à n'importe quelle séance, directement dans la réservation.</p>
+    </div>
+    <ul class="extras-list" id="extrasList"></ul>
+  </section>
+
+  <section class="section" id="infos">
+    <div class="section-head">
+      <h2 data-i18n="info.title">Bon à savoir</h2>
+    </div>
+    <ol class="steps">
+      <li><b>01</b><span data-i18n="info.s1">Tu choisis ta séance, tes suppléments et ton créneau parmi mes disponibilités.</span></li>
+      <li><b>02</b><span data-i18n="info.s2">Ton créneau est bloqué dans mon agenda. Personne d'autre ne peut le prendre.</span></li>
+      <li><b>03</b><span data-i18n="info.s3">Un acompte de 50 % confirme la réservation.</span></li>
+      <li><b>04</b><span data-i18n="info.s4">Le jour J, viens 15 minutes en avance.</span></li>
+    </ol>
+  </section>
+
+  <section class="section book" id="reserver">
+    <div class="section-head">
+      <h2 data-i18n="book.title">Réserver</h2>
+      <p data-i18n="book.sub">Le total se met à jour pendant que tu remplis.</p>
+    </div>
+
+    <form class="book-grid" id="form" novalidate>
+      <div class="book-steps">
+
+        <fieldset class="step">
+          <legend><b>1</b><span data-i18n="f.s1">Ta séance</span></legend>
+          <div class="choice-grid" id="choices"></div>
+          <em class="err" data-err="shoot" data-i18n="err.shoot">Choisis une séance.</em>
+        </fieldset>
+
+        <fieldset class="step">
+          <legend><b>2</b><span data-i18n="f.s2">Les détails</span></legend>
+
+          <fieldset class="cond sub" data-show="studio event">
+            <legend data-i18n="f.duration">Durée du shooting</legend>
+            <div class="pills" id="hoursPills"></div>
+          </fieldset>
+
+          <label class="field cond" data-show="duo large maternityFamily">
+            <span data-i18n="f.people">Nombre de personnes</span>
+            <input type="number" name="people" id="people" min="1" max="30" inputmode="numeric">
+            <em class="err" data-err="people" data-i18n="err.people">Indique le nombre de personnes.</em>
+          </label>
+
+          <div class="cond" data-show="event">
+            <label class="field">
+              <span data-i18n="f.occasion">Quelle occasion ?</span>
+              <select name="occasion" id="occasion">
+                <option value="" data-i18n="f.choose">Choisir…</option>
+                <option value="proposal" data-i18n="occ.proposal">Demande en mariage</option>
+                <option value="baptism" data-i18n="occ.baptism">Baptême</option>
+                <option value="birthday" data-i18n="occ.birthday">Anniversaire</option>
+                <option value="other" data-i18n="occ.other">Autre</option>
+              </select>
+              <em class="err" data-err="occasion" data-i18n="err.occasion">Indique l'occasion.</em>
+            </label>
+            <label class="field" id="occOtherField" hidden>
+              <span data-i18n="f.occOther">Précise l'occasion</span>
+              <input type="text" name="occasionOther" id="occasionOther">
+              <em class="err" data-err="occasionOther" data-i18n="err.occasion">Indique l'occasion.</em>
+            </label>
+          </div>
+
+          <fieldset class="cond sub" data-show="wedding">
+            <legend data-i18n="f.ceremony">Quelles cérémonies ? (une ou plusieurs)</legend>
+            <div class="pills">
+              <label class="pill"><input type="checkbox" name="ceremony" value="civil"><span data-i18n="cer.civil">Mariage civil</span></label>
+              <label class="pill"><input type="checkbox" name="ceremony" value="traditional"><span data-i18n="cer.traditional">Mariage coutumier</span></label>
+              <label class="pill"><input type="checkbox" name="ceremony" value="religious"><span data-i18n="cer.religious">Mariage religieux</span></label>
+            </div>
+            <em class="err" data-err="ceremony" data-i18n="err.ceremony">Choisis au moins une cérémonie.</em>
+          </fieldset>
+
+          <label class="field cond" data-show="wedding">
+            <span data-i18n="f.weddingDate">Date du mariage</span>
+            <input type="date" name="weddingDate" id="weddingDate">
+            <em class="err" data-err="weddingDate" data-i18n="err.date">Indique une date.</em>
+          </label>
+
+          <label class="field cond" data-show="event wedding outside">
+            <span data-i18n="f.location">Lieu (adresse ou commune)</span>
+            <input type="text" name="location" id="location" autocomplete="street-address">
+            <em class="err" data-err="location" data-i18n="err.location">Indique le lieu, le déplacement en dépend.</em>
+          </label>
+
+          <p class="note cond" data-show="event" data-i18n="f.travelNote">Hors studio, des frais de déplacement (50 €) peuvent s'ajouter selon le lieu. Je te le confirme après la réservation.</p>
+          <p class="note cond" data-show="wedding" data-i18n="f.weddingNote">Pour les mariages, je t'envoie un devis personnalisé selon les cérémonies et le lieu.</p>
+        </fieldset>
+
+        <fieldset class="step">
+          <legend><b>3</b><span data-i18n="f.s3">Suppléments</span> <small data-i18n="f.optional">facultatif</small></legend>
+          <div class="extra-rows" id="extraRows"></div>
+        </fieldset>
+
+        <fieldset class="step">
+          <legend><b>4</b><span data-i18n="f.s4">Tes coordonnées</span></legend>
+          <div class="row">
+            <label class="field">
+              <span data-i18n="f.name">Nom et prénom</span>
+              <input type="text" name="name" id="name" autocomplete="name">
+              <em class="err" data-err="name" data-i18n="err.name">Indique ton nom.</em>
+            </label>
+            <label class="field">
+              <span data-i18n="f.email">E-mail</span>
+              <input type="email" name="email" id="email" autocomplete="email">
+              <em class="err" data-err="email" data-i18n="err.email">Indique un e-mail valide, la confirmation y arrive.</em>
+            </label>
+          </div>
+          <label class="field">
+            <span data-i18n="f.phone">Téléphone / WhatsApp</span>
+            <input type="tel" name="phone" id="phone" autocomplete="tel" inputmode="tel">
+          </label>
+          <label class="field">
+            <span data-i18n="f.notes">Autre chose ? (thème, tenues, idées…)</span>
+            <textarea name="notes" id="notes" rows="3"></textarea>
+          </label>
+        </fieldset>
+
+        <fieldset class="step" id="slotStep">
+          <legend><b>5</b><span id="s5label" data-i18n="f.s5">Ton créneau</span></legend>
+          <p class="note" id="slotIntro" data-i18n="f.slotIntro">Seuls mes jours et heures encore libres s'affichent. Le créneau choisi est bloqué pour toi.</p>
+          <button class="btn" type="button" id="openCal" data-i18n="f.openCal">Voir mes disponibilités</button>
+          <div class="cal-wrap" id="calWrap" hidden><div id="cal"></div></div>
+          <div class="send" id="sendWrap" hidden>
+            <p class="note" id="sendIntro"></p>
+            <div class="send-btns" id="sendBtns"></div>
+            <p class="copied" id="copied" hidden data-i18n="f.copied">Message copié. Colle-le dans la conversation Instagram.</p>
+          </div>
+          <div class="done" id="done" hidden>
+            <p class="done-script">Merci</p>
+            <p data-i18n="f.done">Ton créneau est réservé. Tu reçois la confirmation par e-mail, puis les infos pour l'acompte de 50 %.</p>
+          </div>
+        </fieldset>
+      </div>
+
+      <aside class="summary" id="summary" aria-live="polite">
+        <p class="sum-title" data-i18n="sum.title">Ta réservation</p>
+        <ul class="sum-lines" id="sumLines"></ul>
+        <div class="sum-total">
+          <span data-i18n="sum.total">Total estimé</span>
+          <strong id="sumTotal">0 €</strong>
+        </div>
+        <p class="sum-note" id="sumNote"></p>
+        <p class="sum-fine" data-i18n="sum.fine">Acompte de 50 % à la confirmation. Le solde se règle le jour du shooting.</p>
+      </aside>
+    </form>
+  </section>
+
+</main>
+
+<div class="mobile-bar" id="mobileBar">
+  <div><small data-i18n="sum.total">Total estimé</small><strong id="mobileTotal">0 €</strong></div>
+  <a class="btn btn-small btn-light" href="#slotStep" data-i18n="mb.go">Mon créneau</a>
+</div>
+
+<footer class="foot">
+  <p class="foot-script" data-i18n="foot.thanks">Merci pour votre confiance</p>
+  <span class="logo">Ruthsters<span>Lens</span></span>
+  <p class="foot-verse" data-i18n="foot.verse">Colossiens 3:23 · « Tout ce que vous faites, faites-le de bon cœur, comme pour le Seigneur et non pour des hommes. »</p>
+  <p class="foot-links">
+    <a href="https://www.instagram.com/ruthsters_lens" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://www.tiktok.com/@ruthsters_lens" target="_blank" rel="noopener">TikTok</a>
+  </p>
+</footer>
+
+<script src="config.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
