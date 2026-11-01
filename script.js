@@ -122,7 +122,7 @@
     "f.depositNote": "Important: your booking is only confirmed once the 50% deposit arrives, paid by bank transfer within 24 hours. Without it, it is cancelled.",
     "sum.deposit": "50% deposit within 24 h",
     "f.iban": "Account for the transfer",
-    "pay.amount": "Amount", "pay.payee": "Payee", "pay.payeeNote": "Account managed by Gloire Goniaga for Ruthsters Lens.", "pay.ref": "Reference", "pay.copy": "Copy",
+    "pay.amount": "Amount", "pay.payee": "Payee", "pay.payeeNote": "Account managed by Gloire Goniaga for Ruthsters Lens.", "pay.copy": "Copy",
     "pay.help": "Scan the QR code with your banking app: the transfer is pre-filled. On your phone, copy the details.",
     "pay.range": "For a large group, this is the minimum deposit. I'll confirm the exact amount based on the number of people.",
     "err.shoot": "Pick a session.", "err.people": "Tell me how many people.", "err.occasion": "Tell me the occasion.",
@@ -407,19 +407,17 @@
   const ascii = str => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\x20-\x7E]/g, "");
   const payData = {};
 
-  function showPayment(dateText) {
+  function showPayment() {
     const c = compute();
     if (!c || !c.depositAmount || !CFG.iban) return;
     const amount = c.depositAmount.toFixed(2);
-    const ref = ascii(`Acompte ${L(shoot())[0]} ${$("#name").value.trim()}${dateText ? " " + dateText : ""}`).slice(0, 140);
-    Object.assign(payData, { payAmountRaw: amount, payIbanRaw: CFG.iban.replace(/\s/g, ""), payRef: ref });
+    Object.assign(payData, { payAmountRaw: amount, payIbanRaw: CFG.iban.replace(/\s/g, "") });
     $("#payAmount").textContent = eur(c.depositAmount);
     $("#payPayee").textContent = CFG.payee || "";
     $("#payIban").textContent = CFG.iban;
-    $("#payRef").textContent = ref;
     $("#payRange").hidden = !c.depositRange;
     if (window.qrcode) {
-      const epc = ["BCD", "002", "1", "SCT", "", ascii(CFG.payee || ""), payData.payIbanRaw, "EUR" + amount, "", "", ref].join("\n");
+      const epc = ["BCD", "002", "1", "SCT", "", ascii(CFG.payee || ""), payData.payIbanRaw, "EUR" + amount, "", "", ""].join("\n");
       const qr = qrcode(0, "M");
       qr.addData(epc);
       qr.make();
@@ -482,12 +480,9 @@
     });
     Cal.ns[ns]("on", {
       action: "bookingSuccessful",
-      callback: e => {
-        const d = e && e.detail && e.detail.data;
-        const start = d && (d.startTime || (d.booking && d.booking.startTime) || d.date);
-        const when = start && !isNaN(new Date(start)) ? new Date(start).toLocaleDateString("fr-BE", { day: "2-digit", month: "2-digit" }) : "";
+      callback: () => {
         $("#done").hidden = false;
-        showPayment(when);
+        showPayment();
         $("#done").scrollIntoView({ behavior: "smooth", block: "start" });
       }
     });
