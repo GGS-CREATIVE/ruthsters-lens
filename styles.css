@@ -431,38 +431,22 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--i
 .lb-next { right: 18px; top: 50%; translate: 0 -50%; }
 .lb-count { position: absolute; left: 50%; bottom: 14px; translate: -50% 0; margin: 0; font: 500 12px var(--sans); letter-spacing: .2em; font-variant-numeric: tabular-nums; color: #bdb7ae; }
 
-/* Bulle WhatsApp : la tête de Ruth dépasse derrière la bulle, façon sticker */
+/* Bulle WhatsApp : le libellé s'ouvre au survol, elle remonte au-dessus de la barre mobile */
 .wa-bubble {
   position: fixed; right: 22px; bottom: 22px; z-index: 25;
-  display: block; height: 60px; color: #0b2b17; text-decoration: none;
-  transition: bottom .25s var(--ease-out);
-}
-.wa-pill {
-  position: relative; display: inline-flex; align-items: center; height: 60px; padding: 0 16px;
-  border-radius: 999px; background: #25d366;
+  display: inline-flex; align-items: center; min-width: 56px; height: 56px; padding: 0 14px;
+  border-radius: 999px; background: #25d366; color: #0b2b17; text-decoration: none;
   box-shadow: 0 10px 26px -8px rgba(0,0,0,.45);
-  transition: transform 160ms var(--ease-out);
+  transition: bottom .25s var(--ease-out), transform 160ms var(--ease-out);
 }
-.wa-pill svg { flex: none; }
-.wa-bubble:active .wa-pill { transform: scale(.95); }
-.wa-head {
-  position: absolute; right: -1px; bottom: 44px; width: 68px; height: auto; max-width: none;
-  transform-origin: 55% 100%;
-  filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 6px 10px rgba(0,0,0,.28));
-  transition: transform .35s var(--ease-out);
-  animation: head-peek 700ms var(--ease-out) 900ms backwards;
-}
-@keyframes head-peek {
-  from { transform: translateY(46px) rotate(6deg); opacity: 0; }
-}
-.wa-label {
+.wa-bubble:active { transform: scale(.95); }
+.wa-bubble span {
   max-width: 0; overflow: hidden; white-space: nowrap; opacity: 0;
   font: 500 14px/1 var(--sans);
   transition: max-width .3s var(--ease-out), opacity .2s ease, margin .3s var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
-  .wa-bubble:hover .wa-label, .wa-bubble:focus-visible .wa-label { max-width: 140px; opacity: 1; margin-right: 10px; }
-  .wa-bubble:hover .wa-head { transform: translateY(-5px) rotate(-5deg); }
+  .wa-bubble:hover span, .wa-bubble:focus-visible span { max-width: 140px; opacity: 1; margin-left: 10px; }
 }
 
 /* Barre mobile */
@@ -522,8 +506,8 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--i
     transform: translateY(110%); transition: transform .25s;
   }
   .mobile-bar.on { transform: none; }
-  .mobile-bar.on ~ .wa-bubble { bottom: 88px; }
-  .wa-bubble { right: 14px; bottom: 14px; }
+  .mobile-bar.on ~ .wa-bubble { bottom: 92px; }
+  .wa-bubble { right: 16px; bottom: 16px; }
   .mobile-bar small { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #bdb7ae; }
   .mobile-bar strong { font: 400 22px/1.2 var(--serif); }
   .foot { padding-bottom: 110px; }
