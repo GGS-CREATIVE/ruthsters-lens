@@ -18,7 +18,7 @@ window.RL_CONFIG = {
   calBrand: "#111111",
 
   // Contacts pour les demandes de devis (mariage) ou si l'agenda n'est pas branché
-  whatsapp: "",            // format international sans + ni espaces, ex. 32470123456
+  whatsapp: "32466432322",            // format international sans + ni espaces, ex. 32470123456
   email: "",
   instagram: "ruthsters_lens",
 

@@ -54,6 +54,7 @@
 
   const T = {
     fr: {
+      waHello: "Bonjour Ruth, j'ai une question sur les shootings.",
       from: "à partir de", included: "incluse", hoursLine: "Heure en plus", msgDuration: "Durée", quote: "Sur devis", choose: "Choisir", chosen: "Choisi", each: "/ photo",
       book: "Réserver", perPhoto: "par photo", people: "pers.",
       noteRange: "Le prix exact du grand groupe dépend du nombre de personnes.",
@@ -73,6 +74,7 @@
       cer: { civil: "Mariage civil", traditional: "Mariage coutumier", religious: "Mariage religieux" }
     },
     en: {
+      waHello: "Hi Ruth, I have a question about the shoots.",
       from: "from", included: "included", hoursLine: "Extra hour", msgDuration: "Length", quote: "Custom quote", choose: "Choose", chosen: "Selected", each: "/ photo",
       book: "Book", perPhoto: "per photo", people: "ppl",
       noteRange: "The exact large-group price depends on the number of people.",
@@ -99,6 +101,7 @@
     "about.lead": "Behind Ruthsters Lens is Ruth Sampasa. My way of working fits in one sentence: capturing the essence of life, one beautifully framed glimpse at a time.",
     "about.p": "I photograph portraits, birthdays, pregnancies, families and groups in my studio 30 minutes from Brussels, and I travel to your events.",
     "f.next": "Continue", "f.prev": "Back",
+    "wa.label": "Any questions?",
     "hero.quote": "“One beautifully framed glimpse at a time”",
     "hero.lead": "Portraits, birthdays, maternity, groups, events and weddings, 30 minutes from Brussels. Pick your session, see my availability and lock in your slot.",
     "hero.cta": "Book my shoot", "hero.cta2": "See the prices",
@@ -159,6 +162,12 @@
       const k = el.dataset.i18nHtml;
       el.innerHTML = lang === "en" ? (EN[k] ?? FR[k]) : FR[k];
     });
+    if (CFG.whatsapp) {
+      const wa = $("#waBubble");
+      wa.href = `https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent(t("waHello"))}`;
+      wa.setAttribute("aria-label", `WhatsApp : ${lang === "fr" ? FR["wa.label"] : EN["wa.label"]}`);
+      wa.hidden = false;
+    }
     $("#lang").textContent = lang === "fr" ? "EN" : "FR";
     $("#lang").setAttribute("aria-label", lang === "fr" ? "English" : "Français");
     renderPackages(); renderExtrasList(); renderChoices(); renderHours(); renderExtraRows(); update();
