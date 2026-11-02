@@ -1,0 +1,12 @@
+# Le HTML, le CSS et le JS sont revérifiés à chaque visite : une mise à jour se voit tout de suite.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|css|js)$">
+    Header always set Cache-Control "no-cache, must-revalidate"
+    Header always unset Expires
+  </FilesMatch>
+</IfModule>
+<IfModule mod_expires.c>
+  <FilesMatch "\.(html|css|js)$">
+    ExpiresActive Off
+  </FilesMatch>
+</IfModule>
