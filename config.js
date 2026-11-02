@@ -35,7 +35,7 @@ window.RL_CONFIG = {
   ],
 
   // Photo de Ruth pour « Qui suis-je » (vide = section sans photo)
-  aboutPhoto: "",
+  aboutPhoto: "assets/ruth.jpg",
 
   // Photos de la page d'accueil, dans assets/ (laisser vide pour ne rien afficher)
   gallery: [
