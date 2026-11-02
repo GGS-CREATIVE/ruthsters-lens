@@ -29,7 +29,9 @@ window.RL_CONFIG = {
   // Grande photo du haut de page (elles s'enchaînent)
   hero: [
     { src: "assets/creatif-jaune.jpg", alt: "Shooting créatif, tenue jaune" },
+    { src: "assets/groupe-noir.jpg", alt: "Shooting de groupe, tenues noires" },
     { src: "assets/roses.jpg", alt: "Shooting créatif aux roses rouges" },
+    { src: "assets/groupe-visages.jpg", alt: "Shooting de groupe, visages réunis" },
     { src: "assets/maternite-solo.jpg", alt: "Séance maternité solo" },
     { src: "assets/portrait-blanc.jpg", alt: "Portrait en robe blanche" }
   ],
@@ -40,6 +42,7 @@ window.RL_CONFIG = {
   // Photos de la page d'accueil, dans assets/ (laisser vide pour ne rien afficher)
   gallery: [
     { src: "assets/creatif-jaune.jpg", alt: "Shooting créatif, tenue jaune" },
+    { src: "assets/groupe-noir.jpg", alt: "Shooting de groupe, tenues noires" },
     { src: "assets/portrait-noir.jpg", alt: "Portrait en robe noire" },
     { src: "assets/maternite-solo.jpg", alt: "Séance maternité solo" },
     { src: "assets/couple.jpg", alt: "Séance couple" },
@@ -47,6 +50,7 @@ window.RL_CONFIG = {
     { src: "assets/roses.jpg", alt: "Shooting créatif aux roses rouges" },
     { src: "assets/maternite-famille.jpg", alt: "Séance maternité en famille" },
     { src: "assets/groupe.jpg", alt: "Shooting de groupe entre amies", wide: true },
+    { src: "assets/groupe-visages.jpg", alt: "Shooting de groupe, visages réunis" },
     { src: "assets/diplome.jpg", alt: "Shooting de remise de diplôme" },
     { src: "assets/portrait-blanc.jpg", alt: "Portrait en robe blanche" },
     { src: "assets/maternite-couple.jpg", alt: "Séance maternité en couple" }
