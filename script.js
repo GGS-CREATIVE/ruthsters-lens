@@ -29,10 +29,10 @@
     { id: "maternityFamily", img: "assets/maternite-famille.jpg", group: "maternity", min: 150, max: 150,
       fr: ["Maternité couple / famille", "1 h de shooting · avec ton/ta partenaire ou ta famille"],
       en: ["Maternity couple / family", "1-hour shoot · with your partner or family"] },
-    { id: "event", group: "outside", min: 250, max: 250,
+    { id: "event", img: "assets/petit-evenement.jpg", group: "outside", min: 250, max: 250,
       fr: ["Petit événement", "Demande en mariage, baptême, anniversaire… sur le lieu de ton choix"],
       en: ["Small event", "Proposal, baptism, birthday… at the place of your choice"] },
-    { id: "wedding", group: "outside", quote: true,
+    { id: "wedding", img: "assets/mariage.jpg", group: "outside", quote: true,
       fr: ["Mariage", "Civil, coutumier ou religieux · devis personnalisé"],
       en: ["Wedding", "Civil, traditional or religious · custom quote"] }
   ];
@@ -706,15 +706,20 @@
       peek.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${(tx - x) * 0.02}deg)`;
       raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.3 ? requestAnimationFrame(loop) : 0;
     };
+    // l'aperçu se place à droite du curseur, sans jamais couvrir le nom de la séance
+    const peekX = e => {
+      const name = e.target.closest(".pkg-row")?.querySelector(".pkg-name");
+      return Math.max(e.clientX + 28, name ? name.getBoundingClientRect().right + 16 : 0);
+    };
     $("#packages").addEventListener("pointermove", e => {
-      tx = e.clientX + 28; ty = e.clientY - 150;
+      tx = peekX(e); ty = e.clientY - 150;
       if (!raf) raf = requestAnimationFrame(loop);
     });
     $("#packages").addEventListener("pointerover", e => {
       const row = e.target.closest(".pkg-row");
       const src = row && row.dataset.img;
       if (!src) { peek.classList.remove("on"); return; }
-      if (!peek.classList.contains("on")) { x = tx = e.clientX + 28; y = ty = e.clientY - 150; }
+      if (!peek.classList.contains("on")) { x = tx = peekX(e); y = ty = e.clientY - 150; }
       if (src !== cur) {
         const back = front === a1 ? a2 : a1;
         back.src = src; back.classList.add("show"); front.classList.remove("show");

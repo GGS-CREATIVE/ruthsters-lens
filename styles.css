@@ -457,6 +457,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--i
 }
 @media (max-width: 760px) {
   .nav { display: none; }
+  .peek { display: none; }
   .progress { display: flex; justify-content: space-between; align-items: center; }
   .progress li { flex: none; }
   .progress button { width: auto; }
